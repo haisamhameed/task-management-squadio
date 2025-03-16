@@ -26,4 +26,12 @@ class CommentRepository implements CommentRepositoryInterface
     {
         return Comment::destroy($id) > 0;
     }
+
+    public function getAllComments()   
+    {
+        return Comment::select('id', 'comment', 'user_id', 'task_id')
+            ->where('user_id', auth()->id())
+            ->with('author:id,name,email', 'task:id,title,status')
+            ->get();
+    }
 }

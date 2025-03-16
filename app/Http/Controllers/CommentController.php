@@ -21,6 +21,14 @@ class CommentController extends Controller
         $this->commentRepository = $commentRepository;
     }
 
+    public function index()
+    {
+        $comments = $this->commentRepository->getAllComments();
+        return $this->successResponse('Comments retrieved successfully', [
+            'tasks' => CommentResource::collection($comments),
+        ]);
+    }
+
     public function store(StoreRequest $request)
     {
         $data = $request->validated();
