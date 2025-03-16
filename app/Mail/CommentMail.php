@@ -5,6 +5,7 @@ namespace App\Mail;
 use App\Models\Comment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
@@ -28,6 +29,7 @@ class CommentMail extends Mailable
     public function build()
     {
         return $this->subject('New Comment on Task' . $this->comment->task->title)
+                    ->from('info@haisam.com', 'Haisam')
                     ->view('emails.comment')
                     ->with(['comment' => $this->comment]);
     }
