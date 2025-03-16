@@ -1,69 +1,75 @@
-# Project Setup Guide
+# Laravel Task Management API - Setup Guide
 
 ## Prerequisites
 Ensure you have the following installed on your system before proceeding:
+- **Docker** (For running containers)
+- **Docker Compose** (For managing multiple containers)
 
-- [Docker](https://docs.docker.com/get-docker/)
-- [Docker Compose](https://docs.docker.com/compose/install/)
-- [Composer](https://getcomposer.org/download/)
-- [Node.js](https://nodejs.org/) & npm (if applicable)
+## Setup Instructions
 
-## Installation Steps
-
-### 1. Clone the Repository
+### Step 1: Clone the Repository
 ```sh
-git clone <repository-url>
-cd <project-folder>
+git clone <your-repository-url>
+cd <your-project-directory>
 ```
 
-### 2. Copy Environment File
+### Step 2: Build and Start the Containers
+```sh
+docker compose build --no-cache
+docker compose up -d
+```
+This will build and start the following services:
+- PHP-FPM container for Laravel
+- Nginx webserver
+- MySQL database
+- Redis for caching
+- MailHog for testing emails
+- Laravel queue worker
+
+### Step 3: Install Dependencies
+Once the containers are running, execute the following command inside the `app` container to install Laravel dependencies:
+```sh
+docker exec -it laravel_app composer install --no-dev --optimize-autoloader
+```
+
+### Step 4: Configure Environment Variables
+Copy the example environment file and update any necessary configurations:
 ```sh
 cp .env.example .env
 ```
-Update the `.env` file with appropriate configurations.
+Update the `.env` file, ensuring the database and other configurations match the Docker services.
 
-### 3. Start Docker Containers
+### Step 5: Run Migrations
 ```sh
-docker-compose up -d
+docker exec -it laravel_app php artisan migrate
+```
+This will create the necessary tables.
+
+### Step 6: Generate Application Key
+```sh
+docker exec -it laravel_app php artisan key:generate
 ```
 
-### 4. Install PHP Dependencies
-```sh
-docker exec -it app-container-name composer install
+### Step 7: Access the Application
+Your Laravel application should now be running at:
+```
+http://localhost
 ```
 
-### 5. Run Migrations and Seed Database
+### Step 8: Queue Worker (Optional)
+To start the Laravel queue worker, use:
 ```sh
-docker exec -it app-container-name php artisan migrate --seed
+docker exec -it laravel_queue php artisan queue:work redis --sleep=3 --tries=3
 ```
 
-### 6. Generate Application Key
-```sh
-docker exec -it app-container-name php artisan key:generate
+### Step 9: MailHog for Email Testing
+To test email functionality, open:
+```
+http://localhost:8025
 ```
 
-### 7. Set Permissions (if needed)
-```sh
-chmod -R 777 storage bootstrap/cache
-```
-
-### 8. (Optional) Install Frontend Dependencies
-```sh
-docker exec -it app-container-name npm install && npm run build
-```
-
-## Running the Application
-To start the application, ensure the containers are running:
-```sh
-docker-compose up -d
-```
-Access the application at: `http://localhost:8000`
-
-## Troubleshooting
-- Check container logs: `docker logs app-container-name`
-- Restart containers: `docker-compose restart`
-- Rebuild containers (if necessary): `docker-compose up --build -d`
-
-For further issues, check Laravel logs:
-```sh
-docker exec -it app-container-name tail -f storage/logs/laravel.log
+## Useful Docker Commands
+- Restart all containers: `docker compose restart`
+- Stop all containers: `docker compose down`
+- View running containers: `docker ps`
+- View logs for a container: `docker logs -f <container_name>
