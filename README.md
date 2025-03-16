@@ -67,7 +67,8 @@ To test email functionality, open:
 ```
 http://localhost:8025
 ```
-
+### 10. API Testing
+A Postman collection named **Task Management.postman_collection** is included for API testing. Import it into Postman to test the endpoints.
 ## Useful Docker Commands
 - Restart all containers: `docker compose restart`
 - Stop all containers: `docker compose down`
