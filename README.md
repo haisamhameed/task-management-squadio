@@ -9,8 +9,8 @@ Ensure you have the following installed on your system before proceeding:
 
 ### Step 1: Clone the Repository
 ```sh
-git clone <your-repository-url>
-cd <your-project-directory>
+git clone https://github.com/haisamhameed/task-management-squadio
+cd task-management
 ```
 
 ### Step 2: Build and Start the Containers
