@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\RateLimiter;
 use App\Repositories\TaskRepositoryInterface;
 use App\Repositories\UserRepositoryInterface;
 use App\Repositories\CommentRepositoryInterface;
+use App\Repositories\Notifications\EmailNotification;
+use App\Repositories\Notifications\NotificationInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
             UserRepositoryInterface::class => UserRepository::class,
             TaskRepositoryInterface::class => TaskRepository::class,
             CommentRepositoryInterface::class => CommentRepository::class,
+            NotificationInterface::class => EmailNotification::class,
         ];
     
         foreach ($repositories as $interface => $implementation) {

@@ -4,9 +4,11 @@ namespace App\Observers;
 
 use App\Models\Comment;
 use App\Mail\CommentMail;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use App\Repositories\Notifications\NotificationInterface;
 
 class CommentObserver
 {
@@ -16,7 +18,8 @@ class CommentObserver
     public function created(Comment $comment): void
     {
         if ($comment->task->user_id !== Auth::id()) {
-            Mail::to($comment->task->author->email)->queue(new CommentMail($comment->id));
+            $notificationService = App::make(NotificationInterface::class);
+            $notificationService->send($comment->task->author->email, new CommentMail($comment->id));
         }
     }
 
